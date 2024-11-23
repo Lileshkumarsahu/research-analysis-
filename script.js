@@ -1,45 +1,76 @@
+// Replace with your actual API key from Finnhub
+const API_KEY = "ct0reqpr01qkfpo5se2gct0reqpr01qkfpo5se30"; // Your API key goes here
+
+const nifty50Stocks = ['TCS.NS', 'RELIANCE.NS', 'INFY.NS', 'HDFCBANK.NS', 'ICICIBANK.NS', 'SBIN.NS', 'HDFC.NS', 'KOTAKBANK.NS', 'LT.NS', 'ITC.NS', 'HCLTECH.NS', 'BHARTIARTL.NS', 'MARUTI.NS', 'ASIANPAINT.NS', 'ULTRACEMCO.NS', 'AXISBANK.NS', 'M&M.NS', 'NESTLEIND.NS', 'BAJFINANCE.NS', 'POWERGRID.NS'];
+const bankniftyStocks = ['HDFCBANK.NS', 'ICICIBANK.NS', 'SBIN.NS', 'KOTAKBANK.NS', 'AXISBANK.NS', 'INDUSINDBK.NS', 'BANDHANBNK.NS', 'YESBANK.NS', 'FEDERALBNK.NS', 'RBLBANK.NS'];
+const indexes = ['^NSEI', '^BSESN']; // Nifty and Sensex indexes
+
 // Function to fetch stock data from Finnhub API
 async function getStockData(symbol) {
-    const url = `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=ct0reqpr01qkfpo5se2gct0reqpr01qkfpo5se30`; // Replace with your actual API key
-    
-    const response = await fetch(url);
-    
-    if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-    }
+    const url = `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${API_KEY}`;
 
-    const data = await response.json();
-    return data;
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`Failed to fetch data for ${symbol}`);
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        return null;
+    }
 }
 
 // Function to display stock data
 async function displayStockData() {
-    const stocks = ['TCS.NS', 'RELIANCE.NS', 'INFY.NS']; // Example stock symbols
-    const tickerDiv = document.getElementById("stock-ticker");
+    const nifty50Div = document.getElementById("nifty50");
+    const bankniftyDiv = document.getElementById("banknifty");
+    const indexesDiv = document.getElementById("indexes");
 
-    let stockHTML = '<h3>Live Market Data:</h3>';
-    for (let stock of stocks) {
-        try {
-            const data = await getStockData(stock);
-            const livePrice = data.c; // Current price
-            const openPrice = data.o; // Opening price
-            const highPrice = data.h; // High price
-            const lowPrice = data.l; // Low price
-
-            stockHTML += `
+    // Display Nifty 50 Stocks
+    let nifty50HTML = '<h3>Stock Data</h3>';
+    for (let stock of nifty50Stocks) {
+        const data = await getStockData(stock);
+        if (data) {
+            nifty50HTML += `
                 <div>
-                    <strong>${stock}</strong>: 
-                    Current Price: ₹${livePrice.toFixed(2)} <br>
-                    Open: ₹${openPrice.toFixed(2)} | High: ₹${highPrice.toFixed(2)} | Low: ₹${lowPrice.toFixed(2)}
+                    <strong>${stock}</strong>: ₹${data.c} <br>
+                    Open: ₹${data.o} | High: ₹${data.h} | Low: ₹${data.l} | Previous Close: ₹${data.pc}
                 </div><br>
             `;
-        } catch (error) {
-            stockHTML += `<p>Error fetching data for ${stock}</p>`;
         }
     }
+    nifty50Div.innerHTML = nifty50HTML;
 
-    tickerDiv.innerHTML = stockHTML;
+    // Display Bank Nifty Stocks
+    let bankniftyHTML = '<h3>Stock Data</h3>';
+    for (let stock of bankniftyStocks) {
+        const data = await getStockData(stock);
+        if (data) {
+            bankniftyHTML += `
+                <div>
+                    <strong>${stock}</strong>: ₹${data.c} <br>
+                    Open: ₹${data.o} | High: ₹${data.h} | Low: ₹${data.l} | Previous Close: ₹${data.pc}
+                </div><br>
+            `;
+        }
+    }
+    bankniftyDiv.innerHTML = bankniftyHTML;
+
+    // Display Major Indexes (Sensex & Nifty)
+    let indexesHTML = '';
+    for (let index of indexes) {
+        const data = await getStockData(index);
+        if (data) {
+            indexesHTML += `
+                <div>
+                    <strong>${index}</strong>: ₹${data.c} <br>
+                    Open: ₹${data.o} | High: ₹${data.h} | Low: ₹${data.l} | Previous Close: ₹${data.pc}
+                </div><br>
+            `;
+        }
+    }
+    indexesDiv.innerHTML = indexesHTML;
 }
 
-// Call the function to display stock data
+// Call the function to display data
 displayStockData();
