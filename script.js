@@ -1,4 +1,4 @@
-// Function to fetch stock data
+
 async function getStockData(symbol) {
     const url = `https://yahoo-finance166.p.rapidapi.com/api/autocomplete?query=AA`;
     const options = {
@@ -6,6 +6,7 @@ async function getStockData(symbol) {
         headers: {
             'X-RapidAPI-Key': 'cc3ad16d89msh981d9f09c7edc4cp146a5djsnb2494403', // Replace with your actual key
             'X-RapidAPI-Host': 'yahoo-finance166.p.rapidapi.com'
+            // Function to fetch stock data
         }
     };
 
