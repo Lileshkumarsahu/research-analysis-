@@ -34,7 +34,7 @@ async function displayStockData() {
             nifty50HTML += `
                 <div>
                     <strong>${stock}</strong>: ₹${data.c} <br>
-                    Open: ₹${data.o} | High: ₹${data.h} | Low: ₹${data.l} | Previous Close: ₹${data.pc}
+                    Open: ₹${data.o || 'N/A'} | High: ₹${data.h || 'N/A'} | Low: ₹${data.l || 'N/A'} | Previous Close: ₹${data.pc || 'N/A'}
                 </div><br>
             `;
         }
@@ -49,7 +49,7 @@ async function displayStockData() {
             bankniftyHTML += `
                 <div>
                     <strong>${stock}</strong>: ₹${data.c} <br>
-                    Open: ₹${data.o} | High: ₹${data.h} | Low: ₹${data.l} | Previous Close: ₹${data.pc}
+                    Open: ₹${data.o || 'N/A'} | High: ₹${data.h || 'N/A'} | Low: ₹${data.l || 'N/A'} | Previous Close: ₹${data.pc || 'N/A'}
                 </div><br>
             `;
         }
@@ -64,7 +64,7 @@ async function displayStockData() {
             indexesHTML += `
                 <div>
                     <strong>${index}</strong>: ₹${data.c} <br>
-                    Open: ₹${data.o} | High: ₹${data.h} | Low: ₹${data.l} | Previous Close: ₹${data.pc}
+                    Open: ₹${data.o || 'N/A'} | High: ₹${data.h || 'N/A'} | Low: ₹${data.l || 'N/A'} | Previous Close: ₹${data.pc || 'N/A'}
                 </div><br>
             `;
         }
