@@ -1,32 +1,38 @@
-
+// Function to fetch stock data from Finnhub API
 async function getStockData(symbol) {
-    const url = `https://yahoo-finance166.p.rapidapi.com/api/autocomplete?query=AA`;
-    const options = {
-        method: 'GET',
-        headers: {
-            'X-RapidAPI-Key': 'cc3ad16d89msh981d9f09c7edc4cp146a5djsnb2494403', // Replace with your actual key
-            'X-RapidAPI-Host': 'yahoo-finance166.p.rapidapi.com'
-            // Function to fetch stock data
-        }
-    };
+    const url = `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=ct0reqpr01qkfpo5se2gct0reqpr01qkfpo5se30`; // Replace with your actual API key
+    
+    const response = await fetch(url);
+    
+    if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+    }
 
-    const response = await fetch(url, options);
     const data = await response.json();
-    return data.quoteResponse.result[0];
+    return data;
 }
 
 // Function to display stock data
 async function displayStockData() {
-    const stocks = ['TCS.BO', 'RELIANCE.NS', 'INFY.NS'];
+    const stocks = ['TCS.NS', 'RELIANCE.NS', 'INFY.NS']; // Example stock symbols
     const tickerDiv = document.getElementById("stock-ticker");
 
     let stockHTML = '<h3>Live Market Data:</h3>';
     for (let stock of stocks) {
         try {
             const data = await getStockData(stock);
-            const livePrice = data.regularMarketPrice;
-            const closePrice = data.regularMarketPreviousClose;
-            stockHTML += `<p><strong>${data.longName}</strong>: ₹${livePrice.toFixed(2)} (Close: ₹${closePrice.toFixed(2)})</p>`;
+            const livePrice = data.c; // Current price
+            const openPrice = data.o; // Opening price
+            const highPrice = data.h; // High price
+            const lowPrice = data.l; // Low price
+
+            stockHTML += `
+                <div>
+                    <strong>${stock}</strong>: 
+                    Current Price: ₹${livePrice.toFixed(2)} <br>
+                    Open: ₹${openPrice.toFixed(2)} | High: ₹${highPrice.toFixed(2)} | Low: ₹${lowPrice.toFixed(2)}
+                </div><br>
+            `;
         } catch (error) {
             stockHTML += `<p>Error fetching data for ${stock}</p>`;
         }
@@ -35,5 +41,5 @@ async function displayStockData() {
     tickerDiv.innerHTML = stockHTML;
 }
 
-// Call the display function
+// Call the function to display stock data
 displayStockData();
